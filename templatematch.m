@@ -1,4 +1,4 @@
-info = mha_read_header('C:\Users\rabbit\Pictures\volume_1.mha');
+info = mha_read_header('C:\Users\rabbit\Documents\Github\imageprocessing\1_T1.mha');
 image = mha_read_volume(info);
 train_abnormal_image =gpuArray(image(20:150,20:200,1));
 train_normal_image =gpuArray(image(20:150,20:200,1));
@@ -56,7 +56,7 @@ for i=1:size_1+size_2
     images{i} = gather(train_abnormal_image(:,:,i));
 end
 
-trainData = zeros(60,131*181);
+trainData = zeros(size_1 + size_2,131*181);
 for ii=1:size_1 + size_2
     images{ii} = reshape(images{ii}', 1, size(images{ii},1)*size(images{ii},2));
     trainData(ii,:) = images{ii};
