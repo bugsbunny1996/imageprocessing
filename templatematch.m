@@ -1,4 +1,4 @@
-info = mha_read_header('C:\Users\rabbit\Documents\Github\imageprocessing\volume_1.mha');
+        info = mha_read_header('C:\Users\rabbit\Documents\Github\imageprocessing\volume_1.mha');
 image = mha_read_volume(info);
 train_abnormal_image =gpuArray(image(20:150,20:200,1));
 train_normal_image =gpuArray(image(20:150,20:200,1));
@@ -32,7 +32,7 @@ temp2 = c_cpu2(ypeak2, xpeak2);
 
     if ((temp2)>(0.40)|| (temp1>0.44))
         count_1= count_1 +1;
-%         train_abnormal_image(:,:,count_1) = img; 
+        train_abnormal_image(:,:,count_1) = img; 
         points = detectFASTFeatures(img); 
         points = points.selectStrongest(20);
         temp = points.Location;
@@ -60,6 +60,7 @@ end
 %          train_abnormal_image(:,:,i) = train_normal_image(:,:,i-size_1);
            arrayab(:,:,i) = arrayno(:,:,i-count_1);
      end
+   
     for i=1:count_1+count_2
 %         images{i} = gather(train_abnormal_image(:,:,i));
         images{i} = gather(arrayab(:,:,i));
@@ -73,9 +74,9 @@ end
          
     end
 
-SVMStruct = svmtrain (trainData,group);
+SVMStruct = svmtrain(trainData,group);%'useGPU','yes' );
 
-inputImg = (imread('C:\Users\rabbit\Documents\Github\imageprocessing\testimage2.png'));
+inputImg = (imread('C:\Users\rabbit\Documents\Github\imageprocessing\testimage1.png'));
 if size(inputImg,3)== 3
     inputImg = rgb2gray(inputImg);
 end
@@ -86,10 +87,8 @@ inputImgpoints = inputImgpoints.selectStrongest(20);
 inputImgpoints = inputImgpoints.Location;
 imshow(inputImg); hold on;
 points = detectFASTFeatures(inputImg);
-if size(points,1) < 20 
-
-end
+if size(points,1)>= 20 
 plot(points.selectStrongest(20));
 inputImg = reshape (inputImgpoints', 1, size(inputImgpoints,1)*size(inputImgpoints,2));
-result = svmclassify(SVMStruct, inputImg)
-
+result = svmclassify(SVMStruct, inputImg);
+end
